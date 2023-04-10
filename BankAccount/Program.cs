@@ -12,8 +12,10 @@
                 Console.WriteLine("\nPlease enter the number code of the operation to perform.");
                 Console.WriteLine("\t1. Log in");
                 Console.WriteLine("\t2. Sign up");
-                string? choice = Console.ReadLine();
+                string choice = Console.ReadLine();
                 choice = choice?.Trim().ToLower() ?? string.Empty;
+
+                List<User> users = new List<User>();
 
                 switch (choice)
                 {
@@ -28,9 +30,8 @@
                     case "s":
                     case "sign up":
                     case "signup":
-                        Console.WriteLine("Sign up placeholder");
+                        Register(Main.users, typeof(Program));
                         break;
-
                     default:
                         Console.WriteLine("Invalid choice. Please try again.");
                         continue;
@@ -71,5 +72,11 @@
             Console.ReadKey();
             return;
         }
+        class User
+        {
+            public string Username { get; set; }
+            public string Password { get; set; }
+        }   
+        
     }
 }
