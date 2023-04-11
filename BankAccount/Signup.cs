@@ -16,7 +16,7 @@ namespace BankApp
             int attempts = 3;
             Console.WriteLine("Enter your email:");
             string email = Console.ReadLine()!;
-            registerAttemps++;
+            registerAttempts++;
             
 
             while (email == "" && registerAttempts <= attempts || IsValid(email) == false && registerAttempts <= attempts){
