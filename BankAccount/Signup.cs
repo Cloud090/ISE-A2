@@ -12,33 +12,34 @@ namespace BankApp
         
         public static void Register(List<User> users)
         {
-            int registerAttemps = 0;
+            int registerAttempts = 0;
+            int attempts = 3;
             Console.WriteLine("Enter your email:");
             string email = Console.ReadLine()!;
             registerAttemps++;
             
 
-            while (email == "" && registerAttemps <= 3 || IsValid(email) == false && registerAttemps <= 3){
+            while (email == "" && registerAttempts <= attempts || IsValid(email) == false && registerAttempts <= attempts){
                 Console.WriteLine("Invalid Email. Try again.");
                 Console.WriteLine("Enter Email:");
                 email = Console.ReadLine()!;
-                registerAttemps++;
+                registerAttempts++;
             }
             string password = "";
-            if (registerAttemps <= 3) {
+            if (registerAttempts <= attempts) {
                 Console.WriteLine("Create a password:");
                 password = Console.ReadLine()!;
-                registerAttemps++;
+                registerAttempts++;
             }
             
             
-            while (password == "" && registerAttemps <= 3 ){
+            while (password == "" && registerAttempts <= attempts ){
                 Console.WriteLine("Invalid Password. Try again.");
                 Console.WriteLine("Create a password:");
                 password = Console.ReadLine()!;
-                registerAttemps++;
+                registerAttempts++;
             }
-            if (registerAttemps > 3) {
+            if (registerAttempts > attempts) {
                 Console.WriteLine("Registration Unsucessful. Try again later.");
             }
             else {
