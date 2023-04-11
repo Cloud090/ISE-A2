@@ -24,14 +24,19 @@ namespace BankApp
                 email = Console.ReadLine()!;
                 registerAttemps++;
             }
-
-            Console.WriteLine("Create a password:");
-            string password = Console.ReadLine()!;
-            registerAttemps++;
+            string password = "";
+            if (registerAttemps <= 3) {
+                Console.WriteLine("Create a password:");
+                password = Console.ReadLine()!;
+                registerAttemps++;
+            }
+            
+            
             while (password == "" && registerAttemps <= 3 ){
                 Console.WriteLine("Invalid Password. Try again.");
                 Console.WriteLine("Create a password:");
                 password = Console.ReadLine()!;
+                registerAttemps++;
             }
             if (registerAttemps > 3) {
                 Console.WriteLine("Registration Unsucessful. Try again later.");
