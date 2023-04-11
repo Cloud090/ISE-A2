@@ -16,14 +16,14 @@ namespace BankApp
             int maxAttempts = 3;
             Console.WriteLine("Enter your email:");
             string email = Console.ReadLine()!;
-            registerAttempts++;
+            currentAttempt++;
             
 
-            while (email == "" && currentAttempt <= maxAttempts || IsValid(email) == false && currentAttempt <= maxAttempts){
+            while (email == "" && currentAttempt < maxAttempts || IsValid(email) == false && currentAttempt < maxAttempts){
                 Console.WriteLine("Invalid Email. Try again.");
                 Console.WriteLine("Enter Email:");
                 email = Console.ReadLine()!;
-                registerAttempts++;
+                currentAttempt++;
             }
             string password = "";
             if (currentAttempt <= maxAttempts) {
