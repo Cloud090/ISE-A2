@@ -31,7 +31,7 @@ namespace BankApp
                     case "l":
                     case "log in":
                     case "login":
-                        Login(users);
+                        
                         break;
 
                     case "2":
