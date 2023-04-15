@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace BankApp
 {
     public class BankAccount
@@ -11,25 +6,31 @@ namespace BankApp
         private static int accountNumberSeed = 147258369;
         public string NumberID { get; }
         public string Owner { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
         public decimal Balance
         {
             get
             {
                 decimal balance = 0;
+
                 foreach (var item in allTransactions)
                 {
                     balance += item.Amount;
                 }
+
                 return balance;
             }
         }
 
-        public BankAccount(string name, decimal initialBalance)
+        public BankAccount(string email, string password, string name = "User", decimal initialBalance = 100)   // Default values to be changed later
         {
             NumberID = accountNumberSeed.ToString();
             accountNumberSeed++;
 
             Owner = name;
+            Email = email;
+            Password = password;
             MakeDeposit(initialBalance, DateTime.Now, "Initial balance");
         }
 
@@ -39,12 +40,14 @@ namespace BankApp
             {
                 throw new ArgumentOutOfRangeException(nameof(amount), "Deposit amount must be positive");
             }
+
             var deposit = new Transaction
             {
                 Amount = amount, 
                 Date = date, 
                 Note = note
             };
+
             allTransactions.Add(deposit);
         }
 
@@ -59,12 +62,14 @@ namespace BankApp
             {
                 throw new InvalidOperationException("Insufficient funds for requested withdrawal");
             }
+
             var withdrawal = new Transaction 
             {
                 Amount = -amount, 
                 Date = date, 
                 Note = note
             };
+
             allTransactions.Add(withdrawal);
         }
 
@@ -75,12 +80,14 @@ namespace BankApp
             var report = new System.Text.StringBuilder();
 
             decimal balance = 0;
-            report.AppendLine("Date\t\tAmount\tBalance\tNote");
+            report.AppendLine("\nDate\t\tAmount\tBalance\tNote");
+
             foreach (var item in allTransactions)
             {
                 balance += item.Amount;
                 report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t{item.Note}");
             }
+
             return report.ToString();
         }
     }
