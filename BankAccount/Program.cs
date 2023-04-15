@@ -52,7 +52,7 @@ namespace BankApp
                     case "l":
                     case "log in":
                     case "login":
-                        
+                        Login.Authenticate(users);
                         break;
 
                     case "2":
