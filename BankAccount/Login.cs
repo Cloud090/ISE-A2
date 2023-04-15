@@ -3,17 +3,18 @@ namespace BankApp
 {
     public class Login
     {
-        public SessionState Authenticate(List<BankAccount> accountsList, out BankAccount? confirmedUser)
+        //Authenticating user session
+        public SessionState Authenticate(List<BankAccount> users, out BankAccount? confirmedUser)
         {
             int currentAttempt = 0;
             int maxAttempts = 3;
-            confirmedUser = null;
+            confirmedUser = null; // Pre-setting confirmed user to null/empty
 
             Console.WriteLine("\nLog in.");
 
             while (currentAttempt < maxAttempts)
             {
-                Console.WriteLine("\nPlease enter your email address:");
+                Console.WriteLine("\nPlease enter your email address:"); // Prompting and taking inputs
                 string email = Console.ReadLine()!;
 
                 if (string.IsNullOrWhiteSpace(email))
@@ -26,21 +27,21 @@ namespace BankApp
                 Console.WriteLine("\nEnter your password:");
                 string password = Console.ReadLine()!;
 
-                if (string.IsNullOrWhiteSpace(password))
+                if (string.IsNullOrWhiteSpace(password)) // Denying blank attempts
                 {
                     Console.WriteLine("Password cannot be blank.");
                     currentAttempt++;
                     continue;
                 }
 
-                BankAccount existingUser = accountsList.Find(user => user.Email == email && user.Password == password)!;
+                BankAccount existingUser = users.Find(user => user.Email == email && user.Password == password)!; // Checking if user exits and matches inputs
 
-                if (existingUser == null)
+                if (existingUser == null) // If it does not alert user and give another attempt
                 {
                     Console.WriteLine("Invalid email or password. Please try again.");
                     currentAttempt++;
                 }
-                else
+                else // If user exists
                 {
                     Console.WriteLine("\nLogin successful!");
                     Console.WriteLine($"\nWelcome, {existingUser.Owner}!");
@@ -51,7 +52,7 @@ namespace BankApp
             }
 
             Console.WriteLine("Login unsuccessful. \nForgotten the email or password? Contact our support!");
-            return SessionState.SessionEnded;
+            return SessionState.SessionEnded; // Ends session once reached max attempts
         }
     }
 }

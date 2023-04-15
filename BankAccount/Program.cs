@@ -14,7 +14,7 @@ namespace BankApp
 
             // Session specific variables
             var currentSessionState = SessionState.Unknown;
-            var accountsList = new List<BankAccount>();
+            var users = new List<BankAccount>();
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -23,7 +23,7 @@ namespace BankApp
             {
                 if (currentSessionState == SessionState.Unknown)
                 {
-                    HandleLogin(ref currentSessionState, ref user, accountsList);
+                    HandleLogin(ref currentSessionState, ref user, users);
                 }
 
                 if (currentSessionState == SessionState.Authenticated && user != null)
@@ -59,7 +59,7 @@ namespace BankApp
                     case "s":
                     case "sign up":
                     case "signup":
-                        Signup.Register(accountsList);
+                        Signup.Register(users);
                         break;
                     case "3":
                     case "Exit":
@@ -81,7 +81,7 @@ namespace BankApp
         }
 
 
-        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> accountsList)
+        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> users)
         {
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
             Console.WriteLine("\t1. Log in");
@@ -97,7 +97,7 @@ namespace BankApp
                 case "l":
                 case "log in":
                 case "login":
-                    currentSessionState = _loginProcessor.Authenticate(accountsList, out user);
+                    currentSessionState = _loginProcessor.Authenticate(users, out user);
                     break;
 
                 // Sign up permutations
@@ -105,7 +105,7 @@ namespace BankApp
                 case "s":
                 case "sign up":
                 case "signup":
-                    currentSessionState = Signup.Register(accountsList);
+                    currentSessionState = Signup.Register(users);
                     break;
 
                 // Exit permutations
