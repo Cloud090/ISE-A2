@@ -33,7 +33,7 @@ namespace BankApp
                     continue;
                 }
 
-                BankAccount existingUser = accountsList.Find(user => user.Email == email && user.Password == password);
+                BankAccount existingUser = accountsList.Find(user => user.Email == email && user.Password == password)!;
 
                 if (existingUser == null)
                 {

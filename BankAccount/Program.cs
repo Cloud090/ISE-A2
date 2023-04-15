@@ -1,8 +1,5 @@
-
-
 ﻿using System.Net.Mail;
 using static BankApp.Signup; 
-
 
 namespace BankApp
 {
@@ -33,12 +30,12 @@ namespace BankApp
                 {
                     HandleBankServices(ref currentSessionState, user);
                 }
-
+            }
             bool shouldContinueBanking = true;
             //bool shouldContinueAsking = true;
             Console.WriteLine("Welcome to ISE Banking App.");
 
-            List<User> users = new List<User>();
+            
 
             while (shouldContinueBanking)
             {
@@ -48,9 +45,6 @@ namespace BankApp
                 Console.WriteLine("\t3. Exit");
                 string choice = Console.ReadLine()!;
                 choice = choice?.Trim().ToLower() ?? string.Empty;
-
-                
-                
 
                 switch (choice)
                 {
@@ -65,7 +59,7 @@ namespace BankApp
                     case "s":
                     case "sign up":
                     case "signup":
-                        Signup.Register(users);
+                        Signup.Register(accountsList);
                         break;
                     case "3":
                     case "Exit":
@@ -111,7 +105,7 @@ namespace BankApp
                 case "s":
                 case "sign up":
                 case "signup":
-                    currentSessionState = _signupProcessor.Register(accountsList);
+                    currentSessionState = Signup.Register(accountsList);
                     break;
 
                 // Exit permutations
