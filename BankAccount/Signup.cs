@@ -46,7 +46,7 @@ namespace BankApp
             if (currentAttempt >= maxAttempts)  // If the max attempts are reached registration is unsuccessful & session ends
             {
                 Console.WriteLine("Registration unsuccessful.");
-                return SessionState.SessionEnded;
+                return SessionState.Unknown;
             }
             else  // Otherwise new user will be created
             {

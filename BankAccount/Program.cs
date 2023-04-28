@@ -37,7 +37,6 @@ namespace BankApp
             return;
         }
 
-
         public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> users)
         {
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
