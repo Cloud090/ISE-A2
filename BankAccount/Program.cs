@@ -86,7 +86,8 @@ namespace BankApp
             Console.WriteLine("\t1. Deposit");
             Console.WriteLine("\t2. Withdraw");
             Console.WriteLine("\t3. Transaction History");
-            Console.WriteLine("\t4. Exit");
+            Console.WriteLine("\t4. Log out");
+            Console.WriteLine("\t5. Exit");
             var choice = Console.ReadLine();
             choice = choice?.Trim().ToLower() ?? string.Empty;      // Trim and ToLower reduce possible string permutations
 
@@ -118,8 +119,17 @@ namespace BankApp
                     Console.WriteLine(user.GetAccountHistory());
                     break;
 
-                // Exit permutations
+                // Log out permutations
                 case "4":
+                case "l":
+                case "log out":
+                case "logout":
+                    Console.WriteLine("\nYou've logged out.");
+                    currentSessionState = SessionState.Unknown;
+                    break;
+
+                // Exit permutations
+                case "5":
                 case "e":
                 case "x":
                 case "exit":
