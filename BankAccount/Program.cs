@@ -14,8 +14,7 @@ namespace BankApp
 
             // Session specific variables
             var currentSessionState = SessionState.Unknown;
-            var AccountsList = new List<BankAccount>();
-            BankAccount dummyAccount = new BankAccount("johndoe@email.co", "JDPassword", "John Doe", 985);
+            var AccountsList = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -39,7 +38,7 @@ namespace BankApp
         }
 
 
-        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> users)
+        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> accountsList)
         {
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
             Console.WriteLine("\t1. Log in");
@@ -55,7 +54,7 @@ namespace BankApp
                 case "l":
                 case "log in":
                 case "login":
-                    currentSessionState = _loginProcessor.Authenticate(users, out user);
+                    currentSessionState = _loginProcessor.Authenticate(accountsList, out user);
                     break;
 
                 // Sign up permutations
@@ -63,7 +62,7 @@ namespace BankApp
                 case "s":
                 case "sign up":
                 case "signup":
-                    currentSessionState = Signup.Register(users);
+                    currentSessionState = _signupProcessor.Register(accountsList);
                     break;
 
                 // Exit permutations

@@ -10,7 +10,7 @@ namespace BankApp
     public class Signup
     {
 
-        public static SessionState Register (List<BankAccount> users)
+        public SessionState Register (List<BankAccount> users)
         {
             int currentAttempt = 0; // Tracking attempts
             int maxAttempts = 3; // Max attempts to signup if required
@@ -54,7 +54,8 @@ namespace BankApp
                 users.Add(newUser);
 
                 Console.WriteLine("\nRegistration successful!");
-                Console.WriteLine("\nEmail is: " + email + "\nPassword has been set.");
+                Console.WriteLine("\nEmail is: " + email);
+                Console.WriteLine("Password has been set.");
                 Console.WriteLine("\nPlease log in to start banking.");
                 return SessionState.Unknown;
             }

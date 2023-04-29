@@ -1,4 +1,6 @@
 ﻿
+using System.Text;
+
 namespace BankApp
 {
     public class Login
@@ -15,16 +17,16 @@ namespace BankApp
             while (currentAttempt < maxAttempts)
             {
                 Console.WriteLine("\nPlease enter your email address:"); // Prompting and taking inputs
-                string email = Console.ReadLine()!;
+                string? email = Console.ReadLine();
 
                 if (string.IsNullOrWhiteSpace(email))
                 {
-                    Console.WriteLine("Please enter an email address.");
+                    Console.WriteLine("Email cannot be blank.");
                     currentAttempt++;
                     continue;
                 }
 
-                Console.WriteLine("\nEnter your password:");
+                Console.WriteLine("\nPlease enter your password:");
                 string password = Console.ReadLine()!;
 
                 if (string.IsNullOrWhiteSpace(password)) // Denying blank attempts
@@ -51,7 +53,8 @@ namespace BankApp
                 }
             }
 
-            Console.WriteLine("Login unsuccessful. \nForgotten the email or password? Contact our support!");
+            Console.WriteLine("Login unsuccessful.");
+            Console.WriteLine("\nForgotten your email or password? Contact our support!");
             return SessionState.SessionEnded; // Ends session once reached max attempts
         }
     }

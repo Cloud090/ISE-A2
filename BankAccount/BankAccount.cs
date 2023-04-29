@@ -110,12 +110,12 @@ namespace BankApp
             var report = new System.Text.StringBuilder();
 
             decimal balance = 0;
-            report.AppendLine("\nDate\t\tAmount\tBalance\tNote");
+            report.AppendLine("\nDate\t\tAmount\tBalance\tTo Account:\tNote");
 
             foreach (var item in allTransactions)
             {
                 balance += item.Amount;
-                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t{item.Note}");
+                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t{item.TargetAccount}\t{item.Note}");
             }
 
             return report.ToString();
