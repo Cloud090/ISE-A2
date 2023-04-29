@@ -3,7 +3,7 @@ namespace BankApp
 {
     public class BankAccount
     {
-        private static int accountNumberSeed = 147258369;
+        private static long accountNumberSeed = 147258369;
         public string NumberID { get; }
         public string Owner { get; set; }
         public string Email { get; set; }
@@ -34,7 +34,7 @@ namespace BankApp
             MakeDeposit(initialBalance, DateTime.Now, "Initial balance");
         }
 
-        public void MakeDeposit(decimal amount, DateTime date, string note)
+        public void MakeDeposit(decimal amount, DateTime date, string note = "Deposit")
         {
             if (amount <= 0)
             {
@@ -45,13 +45,14 @@ namespace BankApp
             {
                 Amount = amount, 
                 Date = date, 
+                TargetAccount = NumberID,
                 Note = note
             };
 
             allTransactions.Add(deposit);
         }
 
-        public void MakeWithdrawal(decimal amount, DateTime date, string note)
+        public void MakeWithdrawal(decimal amount, DateTime date, string note = "Withdrawal")
         {
             if (amount <= 0)
             {
@@ -67,10 +68,39 @@ namespace BankApp
             {
                 Amount = -amount, 
                 Date = date, 
+                TargetAccount = "None\t",
                 Note = note
             };
 
             allTransactions.Add(withdrawal);
+        }
+
+        public void MakeTransfer (decimal amount, long targetAccount, DateTime date, string note = "Transfer") 
+        {
+            if (amount <= 0) 
+            {
+                throw new ArgumentOutOfRangeException(nameof(amount), "Transfer amount must be positive");
+            }
+
+            if (Balance - amount < 0) 
+            {
+                throw new InvalidOperationException("Insufficient funds for requested transfer");
+            }
+
+            if (NumberID == targetAccount.ToString()) 
+            {
+                throw new InvalidOperationException("Cannot transfer to own account");
+            }
+
+            var transfer = new Transaction
+            {
+                Amount = -amount,
+                Date = date,
+                TargetAccount = targetAccount.ToString(),
+                Note = note
+            };
+
+            allTransactions.Add(transfer);
         }
 
         private List<Transaction> allTransactions = new List<Transaction>();

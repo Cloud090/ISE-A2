@@ -14,7 +14,8 @@ namespace BankApp
 
             // Session specific variables
             var currentSessionState = SessionState.Unknown;
-            var users = new List<BankAccount>();
+            var AccountsList = new List<BankAccount>();
+            BankAccount dummyAccount = new BankAccount("johndoe@email.co", "JDPassword", "John Doe", 985);
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -23,56 +24,13 @@ namespace BankApp
             {
                 if (currentSessionState == SessionState.Unknown)
                 {
-                    HandleLogin(ref currentSessionState, ref user, users);
+                    HandleLogin(ref currentSessionState, ref user, AccountsList);
                 }
 
                 if (currentSessionState == SessionState.Authenticated && user != null)
                 {
                     HandleBankServices(ref currentSessionState, user);
                 }
-            }
-            bool shouldContinueBanking = true;
-            //bool shouldContinueAsking = true;
-            Console.WriteLine("Welcome to ISE Banking App.");
-
-            
-
-            while (shouldContinueBanking)
-            {
-                Console.WriteLine("\nPlease enter the number code of the operation to perform.");
-                Console.WriteLine("\t1. Log in");
-                Console.WriteLine("\t2. Sign up");
-                Console.WriteLine("\t3. Exit");
-                string choice = Console.ReadLine()!;
-                choice = choice?.Trim().ToLower() ?? string.Empty;
-
-                switch (choice)
-                {
-                    case "1":
-                    case "l":
-                    case "log in":
-                    case "login":
-                        
-                        break;
-
-                    case "2":
-                    case "s":
-                    case "sign up":
-                    case "signup":
-                        Signup.Register(users);
-                        break;
-                    case "3":
-                    case "Exit":
-                    case "exit":
-                        shouldContinueBanking = false;
-                        break;
-                    default:
-                        Console.WriteLine("Invalid choice. Please try again.");
-                        continue;
-                }
-
-                
-
             }
 
             Console.WriteLine("\nThank you for banking with ISE Bank.");
@@ -111,6 +69,7 @@ namespace BankApp
                 // Exit permutations
                 case "3":
                 case "e":
+                case "x":
                 case "exit":
                     currentSessionState = SessionState.SessionEnded;
                     break;
@@ -163,6 +122,7 @@ namespace BankApp
                 // Exit permutations
                 case "4":
                 case "e":
+                case "x":
                 case "exit":
                     currentSessionState = SessionState.SessionEnded;
                     break;
