@@ -25,8 +25,11 @@ namespace BankApp
                 {
                     HandleLogin(ref currentSessionState, ref user, users);
                 }
-
-                if (currentSessionState == SessionState.Authenticated && user != null)
+                else if (currentSessionState == SessionState.ExistingUser)
+                {
+                    currentSessionState = _loginProcessor.Authenticate(users, out user);
+                }
+                else if (currentSessionState == SessionState.Authenticated && user != null)
                 {
                     HandleBankServices(ref currentSessionState, user);
                 }
@@ -83,8 +86,10 @@ namespace BankApp
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
             Console.WriteLine("\t1. Deposit");
             Console.WriteLine("\t2. Withdraw");
-            Console.WriteLine("\t3. Transaction History");
-            Console.WriteLine("\t4. Exit");
+            Console.WriteLine("\t3. Transfer");
+            Console.WriteLine("\t4. Transaction History");
+            Console.WriteLine("\t5. Log out");
+            Console.WriteLine("\t6. Exit");
             var choice = Console.ReadLine();
             choice = choice?.Trim().ToLower() ?? string.Empty;      // Trim and ToLower reduce possible string permutations
 
@@ -116,8 +121,16 @@ namespace BankApp
                     Console.WriteLine(user.GetAccountHistory());
                     break;
 
+                // Transaction History permutations
+                case "5":
+                case "lo":
+                case "logout":
+                case "log out":
+                    currentSessionState = SessionState.Unknown;
+                    break;
+
                 // Exit permutations
-                case "4":
+                case "6":
                 case "e":
                 case "exit":
                     currentSessionState = SessionState.SessionEnded;
