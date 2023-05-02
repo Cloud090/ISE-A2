@@ -25,7 +25,8 @@ namespace BankApp
 
         public BankAccount(string email, string password, string name = "User", decimal initialBalance = 100)   // Default values to be changed later
         {
-            NumberID = accountNumberSeed.ToString();
+            var random = new Random();
+            NumberID = random.Next(100000, 999999).ToString(); // Generates a random 6-digit number between 100000 and 999999
             accountNumberSeed++;
 
             Owner = name;

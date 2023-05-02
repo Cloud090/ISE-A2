@@ -5,6 +5,7 @@ namespace BankApp
     {
         Unknown = 0,
         Authenticated = 1,
-        SessionEnded = 2
+        SessionEnded = 2,
+        ExistingUser = 3
     }
 }
