@@ -11,5 +11,6 @@ namespace BankApp
         public decimal Amount { get; init; }
         public DateTime Date { get; init; }
         public string Note { get; init; } = string.Empty;
+        public string TargetAccount { get; init; } = string.Empty;
     }
 }

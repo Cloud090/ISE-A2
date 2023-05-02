@@ -126,6 +126,7 @@ namespace BankApp
                 case "lo":
                 case "logout":
                 case "log out":
+                    Console.WriteLine("\nYou've logged out.");
                     currentSessionState = SessionState.Unknown;
                     break;
 

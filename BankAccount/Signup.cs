@@ -54,7 +54,6 @@ namespace BankApp
                 }
                 else if (choice == "2")
                 {
-                    //currentSessionState = _loginProcessor.Authenticate(users, out user);
                     return SessionState.ExistingUser;
                 }
             }
