@@ -9,9 +9,11 @@ namespace BankApp
         {
             int currentAttempt = 0;
             int maxAttempts = 3;
-            confirmedUser = null; // Pre-setting confirmed user to null/empty
+            string escapeWord = "exit"; // Input that triggers return to main menu
+            confirmedUser = null;       // Initialising confirmed user as null
 
             Console.WriteLine("\nLog in.");
+            Console.WriteLine("Type in 'Exit' at any time to return to main menu.");
 
             while (currentAttempt < maxAttempts)
             {
@@ -24,6 +26,10 @@ namespace BankApp
                     currentAttempt++;
                     continue;
                 }
+                else if (email.Equals(escapeWord, StringComparison.OrdinalIgnoreCase)) 
+                { 
+                    return SessionState.Default; 
+                }
 
                 Console.WriteLine("\nEnter your password:");
                 string password = Console.ReadLine()!;
@@ -33,6 +39,10 @@ namespace BankApp
                     Console.WriteLine("Password cannot be blank.");
                     currentAttempt++;
                     continue;
+                }
+                else if (password.Equals(escapeWord, StringComparison.OrdinalIgnoreCase)) 
+                {
+                    return SessionState.Default;
                 }
 
                 BankAccount existingUser = users.Find(user => user.Email == email && user.Password == password)!; // Checking if user exits and matches inputs

@@ -3,7 +3,7 @@ namespace BankApp
 {
     public enum SessionState
     {
-        Unknown = 0,
+        Default = 0,
         Authenticated = 1,
         SessionEnded = 2,
         ExistingUser = 3
