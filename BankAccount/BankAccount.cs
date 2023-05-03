@@ -22,7 +22,7 @@ namespace BankApp
             }
         }
 
-        public BankAccount(string email, string password, string name = "User", decimal initialBalance = 100)   // Default values to be changed later
+        public BankAccount(string email, string password, string name, decimal initialBalance)   // Default values to be changed later
         {
             var random = new Random();
             NumberID = random.Next(100000, 999999).ToString(); // Generates a random 6-digit number between 100000 and 999999
@@ -53,25 +53,31 @@ namespace BankApp
         public void MakeDeposit()
         {
             Console.WriteLine("\nPlease enter the amount to deposit:");
-            Console.Write("$ ");
+            Console.WriteLine("\t(Note: Deposit must be a positive number)");
+            Console.Write("$");
+            decimal amount = 0; // Initialises variable outside of while loop
+            string input = Console.ReadLine() ?? string.Empty;
+            input = input.Trim(); // Trims whitespace from beginning and end of string
 
-            if (!Decimal.TryParse(Console.ReadLine(), out decimal amount)) 
+            // Loops until positive number is given or escape word is used
+            while (!InputHelper.IsEscapeWord(input) && (!Decimal.TryParse(input, out amount) || amount <=0)) 
             {
-                throw new Exception("Deposit amount must be a decimal number.");
+                Console.WriteLine("Deposit amount must be a positive decimal number.");
+                Console.Write("$");
+                input = Console.ReadLine() ?? string.Empty;
+                input = input.Trim(); // Trims whitespace from beginning and end of string
             }
 
-            if (amount <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(amount), "Deposit amount must be positive.");
-            }
+            if (InputHelper.IsEscapeWord(input)) { return; } // Return to account menu if 'exit' is entered
 
             Console.WriteLine("\nPlease enter transaction description (optional):");
-            string? note = Console.ReadLine();
+            string note = Console.ReadLine() ?? string.Empty;
+            note = note.Trim(); // Trims whitespace from beginning and end of string
 
             // Gives transaction description if user gives no description
             if (string.IsNullOrEmpty(note)) { note = "Deposit"; }
 
-            note = note.Trim();
+            if (InputHelper.IsEscapeWord(note)) { return; } // Return to account menu if 'exit' is entered
 
             var deposit = new Transaction
             {
@@ -81,30 +87,119 @@ namespace BankApp
                 Note = note
             };
 
-            allTransactions.Add(deposit);
-            Console.WriteLine($"\nDeposit made: $ {deposit.Amount}");
+            allTransactions.Add(deposit); // Adds transaction to list
+            Console.WriteLine($"\nDeposit made: ${deposit.Amount}");
         }
 
-        public void MakeWithdrawal(decimal amount, DateTime date, string note)
+        public void MakeWithdrawal()
         {
-            if (amount <= 0)
+            Console.WriteLine("\nPlease enter the amount to withdraw:");
+            Console.WriteLine("\t(Note: Withdrawal must be a positive number)");
+            Console.Write("$");
+            decimal amount = 0; // Initialises variable outside of while loop
+            string input = Console.ReadLine() ?? string.Empty;
+            input = input.Trim(); // Trims whitespace from beginning and end of string
+
+            // Loops until positive number is given or escape word is used
+            while (!InputHelper.IsEscapeWord(input) && (!Decimal.TryParse(input, out amount) || amount <= 0))
             {
-                throw new ArgumentOutOfRangeException(nameof(amount), "Withdrawal amount must be positive.");
+                Console.WriteLine("Withdrawal amount must be a positive decimal number.");
+                Console.Write("$");
+                input = Console.ReadLine() ?? string.Empty;
+                input = input.Trim(); // Trims whitespace from beginning and end of string
             }
 
-            if (Balance - amount < 0)
+            if (InputHelper.IsEscapeWord(input)) { return; } // Return to account menu if 'exit' is entered
+
+            if (Balance - amount < 0) // Disallows overdrawn balance
             {
-                throw new InvalidOperationException("Insufficient funds for requested withdrawal.");
+                Console.WriteLine("Insufficient funds for requested withdrawal.");
+                return;
             }
 
-            var withdrawal = new Transaction 
+            Console.WriteLine("\nPlease enter transaction description (optional):");
+            string note = Console.ReadLine() ?? string.Empty;
+            note = note.Trim(); // Trims whitespace from beginning and end of string
+
+            // Gives transaction description if user gives no description
+            if (string.IsNullOrEmpty(note)) { note = "Withdrawal"; }
+
+            if (InputHelper.IsEscapeWord(note)) { return; } // Return to account menu if 'exit' is entered
+
+            var withdrawal = new Transaction
             {
-                Amount = -amount, 
-                Date = date, 
+                Amount = -amount,
+                Date = DateTime.Now,
+                TargetAccount = "None\t",
                 Note = note
             };
 
-            allTransactions.Add(withdrawal);
+            allTransactions.Add(withdrawal); // Adds transaction to list
+            Console.WriteLine($"\nWithdrawal made: ${-withdrawal.Amount}");
+        }
+
+        public void MakeTransfer()
+        {
+            Console.WriteLine("\nPlease enter the amount to be transferred:");
+            Console.WriteLine("\t(Note: Transfer must be a positive number)");
+            Console.Write("$");
+            decimal amount = 0; // Initialises variable outside of while loop
+            string input = Console.ReadLine() ?? string.Empty;
+            input = input.Trim(); // Trims whitespace from beginning and end of string
+
+            // Loops until positive number is given or escape word is used
+            while (!InputHelper.IsEscapeWord(input) && (!Decimal.TryParse(input, out amount) || amount <= 0))
+            {
+                Console.WriteLine("Transfer amount must be a positive decimal number.");
+                Console.Write("$");
+                input = Console.ReadLine() ?? string.Empty;
+                input = input.Trim(); // Trims whitespace from beginning and end of string
+            }
+
+            if (InputHelper.IsEscapeWord(input)) { return; } // Return to account menu if 'exit' is entered
+
+            if (Balance - amount < 0) // Disallows overdrawn balance
+            {
+                Console.WriteLine("Insufficient funds for requested transfer.");
+                return;
+            }
+
+            Console.WriteLine("\nPlease enter the account number to receive the funds:");
+            string targetAccount = Console.ReadLine() ?? string.Empty;
+            targetAccount = targetAccount.Trim(); // Trims whitespace from beginning and end of string
+
+            // Loops until acceptable account number is entered or escape word is used
+            while (!InputHelper.IsEscapeWord(targetAccount) && (!long.TryParse(targetAccount, out long result) || targetAccount.Equals(NumberID) || string.IsNullOrWhiteSpace(targetAccount))) 
+            {
+                if (targetAccount.Equals(NumberID)) { Console.WriteLine("Target account cannot be this account."); }
+                else { Console.WriteLine("Target account must be an integer."); }
+
+                Console.WriteLine("\nPlease enter the account number to receive the funds:");
+                targetAccount = Console.ReadLine() ?? string.Empty;
+                targetAccount = targetAccount.Trim(); // Trims whitespace from beginning and end of string
+            }
+
+            if (InputHelper.IsEscapeWord(targetAccount)) { return; } // Return to account menu if 'exit' is entered
+
+            Console.WriteLine("\nPlease enter transaction description (optional):");
+            string note = Console.ReadLine() ?? string.Empty;
+            note = note.Trim(); // Trims whitespace from beginning and end of string
+
+            // Gives transaction description if user gives no description
+            if (string.IsNullOrEmpty(note)) { note = "Transfer"; }
+
+            if (InputHelper.IsEscapeWord(note)) { return; } // Return to account menu if 'exit' is entered
+
+            var transfer = new Transaction
+            {
+                Amount = -amount,
+                Date = DateTime.Now,
+                TargetAccount = targetAccount,
+                Note = note
+            };
+
+            allTransactions.Add(transfer); // Adds transaction to list
+            Console.WriteLine($"\nTransfer made: ${-transfer.Amount}\nTo account no.: {transfer.TargetAccount}");
         }
 
         private List<Transaction> allTransactions = new List<Transaction>();
@@ -114,12 +209,12 @@ namespace BankApp
             var report = new System.Text.StringBuilder();
 
             decimal balance = 0;
-            report.AppendLine("\nDate\t\tAmount\tBalance\tNote");
+            report.AppendLine("\nDate\t\tAmount\tBalance\t\tTo Account:\tNote");
 
             foreach (var item in allTransactions)
             {
                 balance += item.Amount;
-                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t{item.Note}");
+                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t\t{item.TargetAccount}\t{item.Note}");
             }
 
             return report.ToString();

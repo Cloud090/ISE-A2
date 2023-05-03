@@ -1,5 +1,5 @@
 ﻿using System.Net.Mail;
-using static BankApp.Signup; 
+using static BankApp.Signup;
 
 namespace BankApp
 {
@@ -13,7 +13,7 @@ namespace BankApp
         {
             // Session specific variables
             var currentSessionState = SessionState.Default;
-            var accountsList = new List<BankAccount> { new BankAccount ("johndoe@email.com", "JDPassword", "John Doe", 985) };
+            var accountsList = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -32,9 +32,9 @@ namespace BankApp
                 {
                     HandleBankServices(ref currentSessionState, user);
                 }
-                else 
-                { 
-                Console.WriteLine("Processing error. Ending session.");
+                else
+                {
+                    Console.WriteLine("Processing error. Ending session.");
                     currentSessionState = SessionState.SessionEnded;
                 }
             }
@@ -112,14 +112,14 @@ namespace BankApp
                 case "w":
                 case "withdraw":
                 case "withdrawal":
-                    Console.WriteLine("\nYou have made a withdrawal!");
+                    user.MakeWithdrawal();
                     break;
 
                 // Transfer permutations
                 case "3":
                 case "t":
                 case "transfer":
-                    Console.WriteLine("\nYou have made a transfer!");
+                    user.MakeTransfer();
                     break;
 
                 // Account History permutations
@@ -131,10 +131,10 @@ namespace BankApp
                 case "history":
                 case "account history":
                 case "accounthistory":
-                    Console.WriteLine(user.GetAccountHistory());
+                    Console.Write(user.GetAccountHistory());
                     break;
 
-                // Transaction History permutations
+                // Log out permutations
                 case "5":
                 case "l":
                 case "lo":
