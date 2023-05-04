@@ -13,7 +13,7 @@ namespace BankApp
         {
             // Session specific variables
             var currentSessionState = SessionState.Default;
-            var accountsList = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
+            var usersuntsList = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -22,11 +22,11 @@ namespace BankApp
             {
                 if (currentSessionState == SessionState.Default)
                 {
-                    HandleLogin(ref currentSessionState, ref user, accountsList);
+                    HandleLogin(ref currentSessionState, ref user, usersuntsList);
                 }
                 else if (currentSessionState == SessionState.ExistingUser)
                 {
-                    currentSessionState = _loginProcessor.Authenticate(accountsList, out user);
+                    currentSessionState = _loginProcessor.Authenticate(usersuntsList, out user);
                 }
                 else if (currentSessionState == SessionState.Authenticated && user != null)
                 {
@@ -44,7 +44,7 @@ namespace BankApp
             return;
         }
 
-        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> accountsList)
+        public static void HandleLogin(ref SessionState currentSessionState, ref BankAccount? user, List<BankAccount> usersuntsList)
         {
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
             Console.WriteLine("\t1. Log in");
@@ -60,7 +60,7 @@ namespace BankApp
                 case "l":
                 case "log in":
                 case "login":
-                    currentSessionState = _loginProcessor.Authenticate(accountsList, out user);
+                    currentSessionState = _loginProcessor.Authenticate(usersuntsList, out user);
                     break;
 
                 // Sign up permutations
@@ -68,7 +68,7 @@ namespace BankApp
                 case "s":
                 case "sign up":
                 case "signup":
-                    currentSessionState = _signupProcessor.Register(accountsList);
+                    currentSessionState = _signupProcessor.Register(usersuntsList);
                     break;
 
                 // Exit permutations
@@ -93,8 +93,10 @@ namespace BankApp
             Console.WriteLine("\t2. Withdraw");
             Console.WriteLine("\t3. Transfer");
             Console.WriteLine("\t4. Account History");
-            Console.WriteLine("\t5. Log Out");
-            Console.WriteLine("\t6. Exit Application");
+            Console.WriteLine("\t5. Settings");
+            Console.WriteLine("\t6. Log Out");
+            Console.WriteLine("\t7. Exit Application");
+            Console.Write("Option: ");
             var choice = Console.ReadLine();
             choice = choice?.Trim().ToLower() ?? string.Empty;      // Trim and ToLower reduce possible string permutations
 
@@ -127,15 +129,21 @@ namespace BankApp
                 case "a":
                 case "h":
                 case "ah":
-                case "account":
+                case "usersunt":
                 case "history":
-                case "account history":
-                case "accounthistory":
+                case "usersunt history":
+                case "usersunthistory":
                     Console.Write(user.GetAccountHistory());
+                    break;
+                
+                case "5":
+                case "s":
+                case "settings":
+                    user.Settings(ref currentSessionState, user);
                     break;
 
                 // Log out permutations
-                case "5":
+                case "6":
                 case "l":
                 case "lo":
                 case "logout":
@@ -145,7 +153,7 @@ namespace BankApp
                     break;
 
                 // Exit permutations
-                case "6":
+                case "7":
                 case "e":
                 case "x":
                 case "exit":
