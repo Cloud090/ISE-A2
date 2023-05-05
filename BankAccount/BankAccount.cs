@@ -260,11 +260,13 @@ namespace BankApp
                     case "delete account":
                     case "deleteaccount":
                         Console.WriteLine("3. Delete Account");
+                        Console.WriteLine("Enter Password:");
+                        string password = Console.ReadLine()!;
                         Console.WriteLine("\nAre you sure you want to delete your account? This cannot be undone.");
                         Console.WriteLine("\t1. Yes\n\t2. No");
                         string input = Console.ReadLine() ?? string.Empty;
                         input = input.Trim().ToLower();
-                        if (input != "yes" && input != "y" && input != "1") 
+                        if ((input != "yes" && input != "y" && input != "1") || password != user.Password) 
                         {
                             continue;
                         }
@@ -315,9 +317,9 @@ namespace BankApp
                 password = Console.ReadLine()!;
             }
 
-            if (currentAttempt >= maxAttempts)
+            if (currentAttempt > maxAttempts)
             {
-                Console.WriteLine("\nInvalid password. Press enter to return to the main menu.");
+                Console.WriteLine("\nInvalid password or attempt limit reached. Press enter to return to the settings menu.");
                 Console.ReadLine();
                 return;
             }
@@ -331,19 +333,19 @@ namespace BankApp
 
                 if (newPassword != confirmNewPassword || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmNewPassword))
                 {
-                    Console.WriteLine("\nThe new passwords you entered do not match or were left blank. \nPress enter to return to the main menu.");
+                    Console.WriteLine("\nThe new passwords you entered do not match or were left blank. \nPress enter to return to the settings menu.");
                     Console.ReadLine();
                     return;
                 }
                 if (confirmNewPassword == user.Password)
                 {
-                    Console.WriteLine("\nNew password must be different to current password. \nPress enter to return to the main menu.");
+                    Console.WriteLine("\nNew password must be different to current password. \nPress enter to return to the settings menu.");
                     Console.ReadLine();
                     return;
                 }
 
                 Password = newPassword;
-                Console.WriteLine("\nYour password has been updated successfully. \nPress enter to return to the main menu.");
+                Console.WriteLine("\nYour password has been updated successfully. \nPress enter to return to the settings menu.");
                 Console.ReadLine();
             }
         }
