@@ -1,5 +1,4 @@
-﻿
-namespace BankApp
+﻿namespace BankApp
 {
     public class BankAccount
     {
@@ -309,7 +308,7 @@ namespace BankApp
             int maxAttempts = 3;
             int currentAttempt = 0;
 
-            while ((string.IsNullOrWhiteSpace(password) || password != user.Password) && currentAttempt < maxAttempts)
+            while ((string.IsNullOrWhiteSpace(password) || password != user.Password && !InputHelper.IsEscapeWord(password)) && currentAttempt < maxAttempts)
             {
                 currentAttempt++;
                 Console.WriteLine("\nPassword is blank or incorrect. Try Again.");
@@ -317,9 +316,9 @@ namespace BankApp
                 password = Console.ReadLine()!;
             }
 
-            if (currentAttempt > maxAttempts)
+            if (currentAttempt > maxAttempts || InputHelper.IsEscapeWord(password) && password != user.Password)
             {
-                Console.WriteLine("\nInvalid password or attempt limit reached. Press enter to return to the settings menu.");
+                Console.WriteLine("\nInvalid password or attempt limit reached or process exited. \nPress enter to return to the settings menu.");
                 Console.ReadLine();
                 return;
             }
