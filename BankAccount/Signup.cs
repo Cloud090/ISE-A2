@@ -10,13 +10,13 @@ namespace BankApp
 
     public class Signup
     {
-        public SessionState Register(List<BankAccount> users)
+        public SessionState Register(List<BankAccount> accounts)
         {
             int currentAttempt = 0;     // Tracking attempts
             const int maxAttempts = 3;  // Max attempts to signup if required
             string password = "";       // Sets a blank password so password is not null
             string name = string.Empty; // Sets a blank name so name is not null
-            string input = string.Empty;// Sets blank input variable to catch escape word
+            string input = string.Empty;// Sets blank input variable for deposit & to catch escape word
             decimal initialBalance = 0; // Initialises starting balance to $0 to avoid null
 
             Console.WriteLine("\nSign up");
@@ -46,7 +46,7 @@ namespace BankApp
             }
 
             // Check if user with email already exists
-            if (users.Any(u => u.Email == email))
+            if (accounts.Any(u => u.Email == email))
             {
                 Console.WriteLine("\nUser with this email already exists.");
                 Console.WriteLine("Press 1 to return to main menu.");
@@ -73,12 +73,6 @@ namespace BankApp
                 Console.WriteLine("\nPlease create a password:");
                 password = Console.ReadLine() ?? string.Empty;
                 password = password.Trim();
-
-                /* if (InputHelper.IsEscapeWord(password)) 
-                {
-                    Console.WriteLine("Registration cancelled.");
-                    return SessionState.Default; 
-                } */
             }
 
             while (string.IsNullOrEmpty(password) && currentAttempt < maxAttempts) // Enters here if attempts exist & password input was left blank
@@ -163,7 +157,7 @@ namespace BankApp
             else  // Otherwise new user will be created
             {
                 BankAccount newUser = new BankAccount(email, password, name, initialBalance);
-                users.Add(newUser);
+                accounts.Add(newUser);
 
                 Console.WriteLine("\nRegistration successful!");
                 Console.WriteLine("\nEmail is: " + email);
@@ -174,7 +168,7 @@ namespace BankApp
             }
         }
 
-        private bool IsValid(string email) // This method checks if emails passed by users are a valid format 
+        private bool IsValid(string email) // This method checks if emails passed by accounts are a valid format 
         {
             var valid = true; // Assumes email is valid unless found otherwise
 

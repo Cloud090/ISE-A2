@@ -1,4 +1,5 @@
-﻿using System.Net.Mail;
+﻿using System.Collections.Generic;
+using System.Net.Mail;
 using static BankApp.Signup;
 
 namespace BankApp
@@ -13,7 +14,7 @@ namespace BankApp
         {
             // Session specific variables
             var currentSessionState = SessionState.Default;
-            var usersuntsList = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
+            var accounts = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
@@ -22,15 +23,15 @@ namespace BankApp
             {
                 if (currentSessionState == SessionState.Default)
                 {
-                    HandleLogin(ref currentSessionState, ref user, usersuntsList);
+                    HandleLogin(ref currentSessionState, ref user, accounts);
                 }
                 else if (currentSessionState == SessionState.ExistingUser)
                 {
-                    currentSessionState = _loginProcessor.Authenticate(usersuntsList, out user);
+                    currentSessionState = _loginProcessor.Authenticate(accounts, out user);
                 }
                 else if (currentSessionState == SessionState.Authenticated && user != null)
                 {
-                    HandleBankServices(ref currentSessionState, user);
+                    HandleBankServices(ref currentSessionState, accounts, user);
                 }
                 else
                 {
@@ -85,7 +86,7 @@ namespace BankApp
             }
         }
 
-        private static void HandleBankServices(ref SessionState currentSessionState, BankAccount user)
+        private static BankAccount? HandleBankServices(ref SessionState currentSessionState, List<BankAccount> accounts, BankAccount user)
         {
             Console.WriteLine($"\nCurrent Balance: \t$ {user.Balance}.");
             Console.WriteLine("\nPlease enter the number code of the operation to perform.");
@@ -107,6 +108,7 @@ namespace BankApp
                 case "d":
                 case "deposit":
                     user.MakeDeposit();
+                    Console.ReadKey();
                     break;
 
                 // Withdrawal permutations
@@ -115,6 +117,7 @@ namespace BankApp
                 case "withdraw":
                 case "withdrawal":
                     user.MakeWithdrawal();
+                    Console.ReadKey();
                     break;
 
                 // Transfer permutations
@@ -122,6 +125,7 @@ namespace BankApp
                 case "t":
                 case "transfer":
                     user.MakeTransfer();
+                    Console.ReadKey();
                     break;
 
                 // Account History permutations
@@ -129,18 +133,19 @@ namespace BankApp
                 case "a":
                 case "h":
                 case "ah":
-                case "usersunt":
+                case "account":
                 case "history":
-                case "usersunt history":
-                case "usersunthistory":
+                case "account history":
+                case "accounthistory":
                     Console.Write(user.GetAccountHistory());
+                    Console.ReadKey();
                     break;
-                
+
+                // Settings permutations
                 case "5":
                 case "s":
                 case "settings":
-                    user.Settings(ref currentSessionState, user);
-                    break;
+                    return user.Settings(ref currentSessionState, accounts, user);
 
                 // Log out permutations
                 case "6":
@@ -150,7 +155,7 @@ namespace BankApp
                 case "log out":
                     Console.WriteLine("\nYou've logged out.");
                     currentSessionState = SessionState.Default;
-                    break;
+                    return null;
 
                 // Exit permutations
                 case "7":
@@ -160,12 +165,14 @@ namespace BankApp
                 case "exit application":
                 case "exitapplication":
                     currentSessionState = SessionState.SessionEnded;
-                    break;
+                    return null;
 
                 default:
                     Console.WriteLine("Invalid choice. Please try again.");
                     break;
             }
+
+            return user;
         }
 
     }

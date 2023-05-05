@@ -35,7 +35,7 @@ namespace BankApp
 
         public void MakeDeposit(decimal amount, DateTime date, string note)
         {
-            if (amount <= -1)
+            if (amount < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(amount), "Deposit amount must be positive.");
             }
@@ -60,7 +60,7 @@ namespace BankApp
             input = input.Trim(); // Trims whitespace from beginning and end of string
 
             // Loops until positive number is given or escape word is used
-            while (!InputHelper.IsEscapeWord(input) && (!Decimal.TryParse(input, out amount) || amount <=0)) 
+            while (!InputHelper.IsEscapeWord(input) && (!Decimal.TryParse(input, out amount) || amount <= 0))
             {
                 Console.WriteLine("Deposit amount must be a positive decimal number.");
                 Console.Write("$");
@@ -81,14 +81,28 @@ namespace BankApp
 
             var deposit = new Transaction
             {
-                Amount = amount, 
-                Date = DateTime.Now, 
+                Amount = amount,
+                Date = DateTime.Now,
                 TargetAccount = NumberID,
                 Note = note
             };
 
             allTransactions.Add(deposit); // Adds transaction to list
             Console.WriteLine($"\nDeposit made: ${deposit.Amount}");
+        }
+
+        public void WithdrawAccountBalance() 
+        {
+            var withdrawal = new Transaction 
+            {
+                Amount = -Balance,
+                Date = DateTime.Now,
+                TargetAccount = "None",
+                Note = "Closing account"
+            };
+
+            allTransactions.Add(withdrawal);
+            Console.WriteLine($"Balance of ${-withdrawal.Amount} withdrawn for account closure");
         }
 
         public void MakeWithdrawal()
@@ -114,6 +128,7 @@ namespace BankApp
             if (Balance - amount < 0) // Disallows overdrawn balance
             {
                 Console.WriteLine("Insufficient funds for requested withdrawal.");
+                Console.ReadKey();
                 return;
             }
 
@@ -161,6 +176,7 @@ namespace BankApp
             if (Balance - amount < 0) // Disallows overdrawn balance
             {
                 Console.WriteLine("Insufficient funds for requested transfer.");
+                Console.ReadKey();
                 return;
             }
 
@@ -169,7 +185,7 @@ namespace BankApp
             targetAccount = targetAccount.Trim(); // Trims whitespace from beginning and end of string
 
             // Loops until acceptable account number is entered or escape word is used
-            while (!InputHelper.IsEscapeWord(targetAccount) && (!long.TryParse(targetAccount, out long result) || targetAccount.Equals(NumberID) || string.IsNullOrWhiteSpace(targetAccount))) 
+            while (!InputHelper.IsEscapeWord(targetAccount) && (!long.TryParse(targetAccount, out _) || targetAccount.Equals(NumberID) || string.IsNullOrWhiteSpace(targetAccount)))
             {
                 if (targetAccount.Equals(NumberID)) { Console.WriteLine("Cannot transfer to yourself!"); }
                 else { Console.WriteLine("Target account must be an integer."); }
@@ -201,52 +217,113 @@ namespace BankApp
             allTransactions.Add(transfer); // Adds transaction to list
             Console.WriteLine($"\nTransfer made: ${-transfer.Amount}\nTo account no.: {transfer.TargetAccount}");
         }
-        public void Settings(ref SessionState currentSessionState, BankAccount user)
+        public BankAccount? Settings(ref SessionState currentSessionState, List<BankAccount> accounts, BankAccount user)
         {
-            Console.WriteLine("\nISE Bank App User Settings");
-            Console.WriteLine("\t1. Change Password \n\t2. Exit user settings");
-            Console.Write("Option: ");
-            string settingChoice = Console.ReadLine()!;
+            while (true)
+            {
+                Console.WriteLine("\nISE Bank App User Settings");
+                Console.WriteLine("\t1. Change Password");
+                Console.WriteLine("\t2. Update name");
+                Console.WriteLine("\t3. Delete account");
+                Console.WriteLine("\t4. Exit user settings");
+                Console.Write("Option: ");
+                string settingChoice = Console.ReadLine()!;
 
-            switch (settingChoice) {
-                case "1":
-                case "change password":
-                case "password":
-                case "change":
-                    NewPassword(ref currentSessionState, user);
-                    break;
-                case "2":
-                case "exit settings":
-                case "exit":
-                case "back":
-                    return;
-                    
+                switch (settingChoice)
+                {
+                    // Change password permutations
+                    case "1":
+                    case "c":
+                    case "p":
+                    case "cp":
+                    case "change password":
+                    case "change":
+                    case "password":
+                        NewPassword(user);
+                        continue;
+
+                    // Update name
+                    case "2":
+                    case "u":
+                    case "n":
+                    case "name":
+                    case "update name":
+                    case "updatename":
+                        NewName(user);
+                        continue;
+
+                    // Delete account
+                    case "3":
+                    case "d":
+                    case "del":
+                    case "delete":
+                    case "delete account":
+                    case "deleteaccount":
+                        Console.WriteLine("3. Delete Account");
+                        Console.WriteLine("\nAre you sure you want to delete your account? This cannot be undone.");
+                        Console.WriteLine("\t1. Yes\n\t2. No");
+                        string input = Console.ReadLine() ?? string.Empty;
+                        input = input.Trim().ToLower();
+                        if (input != "yes" && input != "y" && input != "1") 
+                        {
+                            continue;
+                        }
+                        user.WithdrawAccountBalance();
+                        try 
+                        {
+                            var accountToDelete = accounts.Single(u => u.Email == user.Email);
+                            accounts.Remove(accountToDelete);
+                        }
+                        catch 
+                        {
+                            Console.WriteLine("Error: Account does not exist. Ending session."); // Should never be hit, ends session if it is
+                            currentSessionState = SessionState.SessionEnded;
+                            return null;
+                        }
+                        Console.WriteLine("\nAccount deleted.");
+                        currentSessionState = SessionState.Default;
+                        Console.ReadKey();
+                        return null;
+
+                    // Exit settings
+                    case "4":
+                    case "e":
+                    case "s":
+                    case "x":
+                    case "exit":
+                    case "back":
+                    case "exit settings":
+                    case "exitsettings":
+                        return user;
+                }
             }
         }
 
-        public void NewPassword(ref SessionState currentSessionState, BankAccount user)
+        private void NewPassword(BankAccount user) // Method to change owner password
         {
-            string email = user.Email;
-            Console.WriteLine(user.Email);
-            Console.WriteLine("\nEnter current password: ");
+            Console.WriteLine($"\nAccount email: {user.Email}");
+            Console.WriteLine("Enter current password: ");
             string password = Console.ReadLine()!;
             int maxAttempts = 3;
             int currentAttempt = 0;
 
-            while (string.IsNullOrWhiteSpace(password) && currentAttempt < maxAttempts || password != user.Password && currentAttempt < maxAttempts) {
+            while ((string.IsNullOrWhiteSpace(password) || password != user.Password) && currentAttempt < maxAttempts)
+            {
                 currentAttempt++;
                 Console.WriteLine("\nPassword is blank or incorrect. Try Again.");
                 Console.WriteLine("\nEnter current password: ");
                 password = Console.ReadLine()!;
             }
 
-            if (currentAttempt >= maxAttempts) {
+            if (currentAttempt >= maxAttempts)
+            {
                 Console.WriteLine("\nInvalid password. Press enter to return to the main menu.");
                 Console.ReadLine();
-                return; 
+                return;
             }
 
-            if (password == user.Password) {
+            if (password == user.Password)
+            {
                 Console.WriteLine("\nEnter new password:");
                 string newPassword = Console.ReadLine()!;
                 Console.WriteLine("\nPlease confirm your new password:");
@@ -258,7 +335,8 @@ namespace BankApp
                     Console.ReadLine();
                     return;
                 }
-                if (confirmNewPassword == user.Password) {
+                if (confirmNewPassword == user.Password)
+                {
                     Console.WriteLine("\nNew password must be different to current password. \nPress enter to return to the main menu.");
                     Console.ReadLine();
                     return;
@@ -268,7 +346,20 @@ namespace BankApp
                 Console.WriteLine("\nYour password has been updated successfully. \nPress enter to return to the main menu.");
                 Console.ReadLine();
             }
-            
+        }
+
+        private void NewName(BankAccount user) // Method to change owner name
+        {
+            Console.WriteLine($"\nAccount email: {user.Email}");
+            Console.WriteLine("Enter updated name, or type 'Exit' to return to previous menu.");
+            string name = Console.ReadLine() ?? string.Empty;
+            name = name.Trim();
+
+            if (InputHelper.IsEscapeWord(name)) { return; }
+
+            Owner = name;
+            Console.WriteLine($"Name updated to: {user.Owner}");
+            Console.ReadKey();
         }
 
         private List<Transaction> allTransactions = new List<Transaction>();
@@ -283,7 +374,7 @@ namespace BankApp
             foreach (var item in allTransactions)
             {
                 balance += item.Amount;
-                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t\t{item.TargetAccount}\t{item.Note}");
+                report.AppendLine($"{item.Date.ToShortDateString()}\t{item.Amount}\t{balance}\t\t{item.TargetAccount}\t\t{item.Note}");
             }
 
             return report.ToString();

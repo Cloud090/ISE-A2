@@ -5,7 +5,7 @@ namespace BankApp
     public class Login
     {
         //Authenticating user session
-        public SessionState Authenticate(List<BankAccount> users, out BankAccount? confirmedUser)
+        public SessionState Authenticate(List<BankAccount> accounts, out BankAccount? confirmedUser)
         {
             int currentAttempt = 0;
             int maxAttempts = 3;
@@ -34,21 +34,19 @@ namespace BankApp
                 Console.WriteLine("\nEnter your password:");
                 string password = Console.ReadLine()!;
 
-                if (string.IsNullOrEmpty(password)) { // Denying blank attempts
-                    Console.WriteLine("Password Cannot be blank. \nWould you like to cancel account login and return to the main menu? \n1. Exit to main menu \n2. Continue");
+                if (string.IsNullOrEmpty(password)) // Denying blank attempts, offering escape option
+                { 
+                    Console.WriteLine("Password Cannot be blank. \nWould you like to cancel account login and return to the main menu?");
+                    Console.WriteLine("\t1. Exit to main menu \n\t2. Continue");
                     string endAccountCreation = Console.ReadLine()!;
                     if (endAccountCreation == "1" || endAccountCreation == "exit" || endAccountCreation == "yes") {
                         Console.WriteLine("Log in cancelled.");
                         return SessionState.Default;
                     }
+                    currentAttempt++;
                 }
-                /*else if (InputHelper.IsEscapeWord(password)) 
-                {
-                    Console.WriteLine("Log in cancelled.");
-                    return SessionState.Default; // Return to main menu
-                }*/
 
-                BankAccount existingUser = users.Find(user => user.Email == email && user.Password == password)!; // Checking if user exits and matches inputs
+                BankAccount existingUser = accounts.Find(user => user.Email == email && user.Password == password)!; // Checking if user exists and matches inputs
 
                 if (existingUser == null) // If it does not alert user and give another attempt
                 {
