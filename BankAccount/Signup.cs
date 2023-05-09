@@ -12,12 +12,12 @@ namespace BankApp
     {
         public SessionState Register(List<BankAccount> accounts)
         {
-            int currentAttempt = 0;     // Tracking attempts
-            const int maxAttempts = 3;  // Max attempts to signup if required
-            string password = "";       // Sets a blank password so password is not null
-            string name = string.Empty; // Sets a blank name so name is not null
-            string input = string.Empty;// Sets blank input variable for deposit & to catch escape word
-            decimal initialBalance = 0; // Initialises starting balance to $0 to avoid null
+            int currentAttempt = 0;
+            const int maxAttempts = 3;
+            string password = "";
+            string name = string.Empty;
+            string input = string.Empty;
+            decimal initialBalance = 0;
 
             Console.WriteLine("\nSign up");
             Console.WriteLine("Type in 'Exit' at any time to return to main menu.");
@@ -25,13 +25,12 @@ namespace BankApp
             string email = Console.ReadLine() ?? string.Empty;
             email = email.Trim();
 
-            // If email input is blank, max attempts have been reached &/or email is an invalid format it will enter the loop
             while (email == "" && currentAttempt < maxAttempts || IsValid(email) == false && currentAttempt < maxAttempts)
             {
                 if (InputHelper.IsEscapeWord(email))
                 {
                     Console.WriteLine("Registration cancelled.");
-                    return SessionState.Default; // Returns to main menu
+                    return SessionState.Default;
                 }
 
                 Console.WriteLine("Invalid email. Please try again.");
@@ -45,7 +44,6 @@ namespace BankApp
                 }
             }
 
-            // Check if user with email already exists
             if (accounts.Any(u => u.Email == email))
             {
                 Console.WriteLine("\nUser with this email already exists.");
@@ -54,7 +52,6 @@ namespace BankApp
                 string choice = Console.ReadLine() ?? string.Empty;
                 choice = choice.Trim();
 
-                // Loops until valid choice is made
                 while (choice != "1" && choice != "2" && !InputHelper.IsEscapeWord(choice))
                 {
                     Console.WriteLine("\nInvalid choice.");
@@ -64,18 +61,18 @@ namespace BankApp
                     choice = choice.Trim();
                 }
 
-                if (choice == "1" || InputHelper.IsEscapeWord(choice)) { return SessionState.Default; } // Returns to main menu
-                else if (choice == "2") { return SessionState.ExistingUser; } // Enters log in menu
+                if (choice == "1" || InputHelper.IsEscapeWord(choice)) { return SessionState.Default; }
+                else if (choice == "2") { return SessionState.ExistingUser; } 
             }
 
-            if (currentAttempt < maxAttempts) // Only allowing inputs if attempt limit isn't reached
+            if (currentAttempt < maxAttempts)
             {
                 Console.WriteLine("\nPlease create a password:");
                 password = Console.ReadLine() ?? string.Empty;
                 password = password.Trim();
             }
 
-            while (string.IsNullOrEmpty(password) && currentAttempt < maxAttempts) // Enters here if attempts exist & password input was left blank
+            while (string.IsNullOrEmpty(password) && currentAttempt < maxAttempts)
             {
                 Console.WriteLine("Password cannot be blank.");
                 currentAttempt++;
@@ -105,7 +102,7 @@ namespace BankApp
                 if (InputHelper.IsEscapeWord(name)) { return SessionState.Default; }
             }
 
-            while (string.IsNullOrEmpty(name) && currentAttempt < maxAttempts) // Enters here if attempts exist & password input was left blank
+            while (string.IsNullOrEmpty(name) && currentAttempt < maxAttempts)
             {
                 Console.WriteLine("Name cannot be blank.");
                 currentAttempt++;
@@ -149,12 +146,12 @@ namespace BankApp
                 }
             }
 
-            if (currentAttempt >= maxAttempts)  // If the max attempts are reached registration is unsuccessful & session ends
+            if (currentAttempt >= maxAttempts)
             {
                 Console.WriteLine("\nRegistration unsuccessful.");
                 return SessionState.Default;
             }
-            else  // Otherwise new user will be created
+            else 
             {
                 BankAccount newUser = new BankAccount(email, password, name, initialBalance);
                 accounts.Add(newUser);
@@ -163,22 +160,22 @@ namespace BankApp
                 Console.WriteLine("\nEmail is: " + email);
                 Console.WriteLine("Password has been set.");
                 Console.WriteLine("\nPlease log in to start banking.");
-                Console.ReadKey(); // Allows a break for user to read info before going back to main menu
+                Console.ReadKey();
                 return SessionState.Default;
             }
         }
 
-        private bool IsValid(string email) // This method checks if emails passed by accounts are a valid format 
+        private bool IsValid(string email)
         {
-            var valid = true; // Assumes email is valid unless found otherwise
+            var valid = true;
 
             try
             {
-                var emailAddress = new MailAddress(email); // passes to Net.Mail
+                var emailAddress = new MailAddress(email); 
             }
             catch
             {
-                valid = false; // If the email is invalid false is set and user will be prompted to enter a valid email format
+                valid = false;
             }
 
             return valid;

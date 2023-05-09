@@ -6,13 +6,11 @@ namespace BankApp
 {
     internal class Program
     {
-        // Session independent variables
         private static readonly Login _loginProcessor = new Login();
         private static readonly Signup _signupProcessor = new Signup();
 
         static void Main(string[] args)
         {
-            // Session specific variables
             var currentSessionState = SessionState.Default;
             var accounts = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
             BankAccount? user = null;
@@ -52,11 +50,10 @@ namespace BankApp
             Console.WriteLine("\t2. Sign up");
             Console.WriteLine("\t3. Exit");
             var choice = Console.ReadLine();
-            choice = choice?.Trim().ToLower() ?? string.Empty;      // Trim and ToLower reduce possible string permutations
+            choice = choice?.Trim().ToLower() ?? string.Empty;
 
             switch (choice)
             {
-                // Log in permutations
                 case "1":
                 case "l":
                 case "log in":
@@ -64,7 +61,6 @@ namespace BankApp
                     currentSessionState = _loginProcessor.Authenticate(usersuntsList, out user);
                     break;
 
-                // Sign up permutations
                 case "2":
                 case "s":
                 case "sign up":
@@ -72,7 +68,6 @@ namespace BankApp
                     currentSessionState = _signupProcessor.Register(usersuntsList);
                     break;
 
-                // Exit permutations
                 case "3":
                 case "e":
                 case "x":
@@ -99,11 +94,10 @@ namespace BankApp
             Console.WriteLine("\t7. Exit Application");
             Console.Write("Option: ");
             var choice = Console.ReadLine();
-            choice = choice?.Trim().ToLower() ?? string.Empty;      // Trim and ToLower reduce possible string permutations
+            choice = choice?.Trim().ToLower() ?? string.Empty;
 
             switch (choice)
             {
-                // Deposit permutations
                 case "1":
                 case "d":
                 case "deposit":
@@ -111,7 +105,6 @@ namespace BankApp
                     Console.ReadKey();
                     break;
 
-                // Withdrawal permutations
                 case "2":
                 case "w":
                 case "withdraw":
@@ -120,7 +113,6 @@ namespace BankApp
                     Console.ReadKey();
                     break;
 
-                // Transfer permutations
                 case "3":
                 case "t":
                 case "transfer":
@@ -128,7 +120,6 @@ namespace BankApp
                     Console.ReadKey();
                     break;
 
-                // Account History permutations
                 case "4":
                 case "a":
                 case "h":
@@ -141,13 +132,11 @@ namespace BankApp
                     Console.ReadKey();
                     break;
 
-                // Settings permutations
                 case "5":
                 case "s":
                 case "settings":
                     return user.Settings(ref currentSessionState, accounts, user);
 
-                // Log out permutations
                 case "6":
                 case "l":
                 case "lo":
@@ -157,7 +146,6 @@ namespace BankApp
                     currentSessionState = SessionState.Default;
                     return null;
 
-                // Exit permutations
                 case "7":
                 case "e":
                 case "x":
