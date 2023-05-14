@@ -28,7 +28,7 @@ namespace BankApp
             // If email input is blank, max attempts have been reached &/or email is an invalid format it will enter the loop
             while (email == "" && currentAttempt < maxAttempts || IsValid(email) == false && currentAttempt < maxAttempts)
             {
-                if (InputHelper.IsEscapeWord(email))
+                if (InputHelper.IsEscapeWord(email)) // Checking for escape word
                 {
                     Console.WriteLine("Registration cancelled.");
                     return SessionState.Default; // Returns to main menu
@@ -37,7 +37,7 @@ namespace BankApp
                 Console.WriteLine("Invalid email. Please try again.");
                 currentAttempt++;
 
-                if (currentAttempt < maxAttempts)
+                if (currentAttempt < maxAttempts) // If not escape word then notify user to reattempt entering a valid email
                 {
                     Console.WriteLine("\nPlease enter your email:");
                     email = Console.ReadLine() ?? string.Empty;
@@ -54,7 +54,7 @@ namespace BankApp
                 string choice = Console.ReadLine() ?? string.Empty;
                 choice = choice.Trim();
 
-                // Loops until valid choice is made
+                // Loops until valid choice is made to determine if they wish to login or go back to main menu
                 while (choice != "1" && choice != "2" && !InputHelper.IsEscapeWord(choice))
                 {
                     Console.WriteLine("\nInvalid choice.");
@@ -80,15 +80,15 @@ namespace BankApp
                 Console.WriteLine("Password cannot be blank.");
                 currentAttempt++;
 
-                if (string.IsNullOrEmpty(password)) {
+                if (string.IsNullOrEmpty(password)) { // If password is left empty enters here
                     Console.WriteLine("Would you like to cancel account creation and return to the main menu? \n1. Exit to main menu \n2. Try password creation again");
                     string endAccountCreation = Console.ReadLine()!;
-                    if (endAccountCreation == "1" || endAccountCreation == "exit" || endAccountCreation == "yes") {
+                    if (endAccountCreation == "1" || endAccountCreation == "exit" || endAccountCreation == "yes") { // Enters if user wishes to cancel account creation
                         return SessionState.Default;
                     }
                 }
 
-                if (currentAttempt < maxAttempts)
+                if (currentAttempt < maxAttempts) // Enters when attempts are left & user didn't want to cancel signup
                 {
                     Console.WriteLine("\nPlease create a password:");
                     password = Console.ReadLine() ?? string.Empty;
@@ -116,7 +116,7 @@ namespace BankApp
                     name = Console.ReadLine() ?? string.Empty;
                     name = name.Trim();
 
-                    if (InputHelper.IsEscapeWord(name)) 
+                    if (InputHelper.IsEscapeWord(name)) // checking escape word before proceeding
                     {
                         Console.WriteLine("Registration cancelled.");
                         return SessionState.Default;
@@ -124,7 +124,7 @@ namespace BankApp
                 }
             }
 
-            if (currentAttempt < maxAttempts)
+            if (currentAttempt < maxAttempts) // Taking a deposit to be inputted to the account at creation time
             {
                 Console.WriteLine("\nPlease enter your initial deposit:");
                 Console.WriteLine("\t(Note: Initial deposit must be positive number)");
@@ -134,12 +134,12 @@ namespace BankApp
 
             while (!Decimal.TryParse(input, out initialBalance) && initialBalance <= 0 && currentAttempt < maxAttempts)
             {
-                if (InputHelper.IsEscapeWord(input))
+                if (InputHelper.IsEscapeWord(input)) // checking escape word
                 {
                     return SessionState.Default;
                 }
 
-                Console.Write("Initial deposit must be a positive number.");
+                Console.Write("Initial deposit must be a positive number."); // Disallowed input taken, alerting user & allowing another attempt
                 currentAttempt++;
                 if (currentAttempt < maxAttempts)
                 {

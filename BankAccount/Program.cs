@@ -14,12 +14,12 @@ namespace BankApp
         {
             // Session specific variables
             var currentSessionState = SessionState.Default;
-            var accounts = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) };
+            var accounts = new List<BankAccount> { new BankAccount("johndoe@email.com", "JDPassword", "John Doe", 985) }; // Accounts storage - Preloading an account
             BankAccount? user = null;
 
             Console.WriteLine("Welcome to ISE Banking App.");
 
-            while (currentSessionState != SessionState.SessionEnded)
+            while (currentSessionState != SessionState.SessionEnded) // Checking & entering session states
             {
                 if (currentSessionState == SessionState.Default)
                 {

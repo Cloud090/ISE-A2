@@ -24,7 +24,7 @@
         public BankAccount(string email, string password, string name, decimal initialBalance)   // Default values to be changed later
         {
             var random = new Random();
-            NumberID = random.Next(100000, 999999).ToString(); // Generates a random 6-digit number between 100000 and 999999
+            NumberID = random.Next(100000, 999999).ToString(); // Generates a random 6-digit number between 100000 and 999999 after new account creation- Sets it as the account number
 
             Owner = name;
             Email = email;
@@ -33,14 +33,14 @@
         }
 
         public void MakeDeposit(decimal amount, DateTime date, string note)
-        {
+        { // Inputs passed in during a deposit
             if (amount < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(amount), "Deposit amount must be positive.");
+                throw new ArgumentOutOfRangeException(nameof(amount), "Deposit amount must be positive."); // Throws error if invalid input
             }
 
             var deposit = new Transaction
-            {
+            { // Creates transaction
                 Amount = amount,
                 Date = date,
                 TargetAccount = NumberID,
@@ -50,8 +50,8 @@
             allTransactions.Add(deposit);
         }
         public void MakeDeposit()
-        {
-            Console.WriteLine("\nPlease enter the amount to deposit:");
+        { // Entered to create deposit
+            Console.WriteLine("\nPlease enter the amount to deposit:"); // Taking user inputs
             Console.WriteLine("\t(Note: Deposit must be a positive number)");
             Console.Write("$");
             decimal amount = 0; // Initialises variable outside of while loop
@@ -91,7 +91,7 @@
         }
 
         public void WithdrawAccountBalance() 
-        {
+        { // Takes action on withdrawals
             var withdrawal = new Transaction 
             {
                 Amount = -Balance,
@@ -105,8 +105,8 @@
         }
 
         public void MakeWithdrawal()
-        {
-            Console.WriteLine("\nPlease enter the amount to withdraw:");
+        { // Entered when user wishes to withdraw funds
+            Console.WriteLine("\nPlease enter the amount to withdraw:"); // User inputs
             Console.WriteLine("\t(Note: Withdrawal must be a positive number)");
             Console.Write("$");
             decimal amount = 0; // Initialises variable outside of while loop
@@ -153,7 +153,7 @@
         }
 
         public void MakeTransfer()
-        {
+        { // Allows user to send money to external accounts
             Console.WriteLine("\nPlease enter the amount to be transferred:");
             Console.WriteLine("\t(Note: Transfer must be a positive number)");
             Console.Write("$");
@@ -217,10 +217,10 @@
             Console.WriteLine($"\nTransfer made: ${-transfer.Amount}\nTo account no.: {transfer.TargetAccount}");
         }
         public BankAccount? Settings(ref SessionState currentSessionState, List<BankAccount> accounts, BankAccount user)
-        {
+        { // User Settings area - To allow basic functions & controls of accounts
             while (true)
             {
-                Console.WriteLine("\nISE Bank App User Settings");
+                Console.WriteLine("\nISE Bank App User Settings"); // Gives options
                 Console.WriteLine("\t1. Change Password");
                 Console.WriteLine("\t2. Update name");
                 Console.WriteLine("\t3. Delete account");
@@ -229,7 +229,7 @@
                 string settingChoice = Console.ReadLine()!;
 
                 switch (settingChoice)
-                {
+                { 
                     // Change password permutations
                     case "1":
                     case "c":
@@ -238,7 +238,7 @@
                     case "change password":
                     case "change":
                     case "password":
-                        NewPassword(user);
+                        NewPassword(user); // Allows user to change their password
                         continue;
 
                     // Update name
@@ -248,7 +248,7 @@
                     case "name":
                     case "update name":
                     case "updatename":
-                        NewName(user);
+                        NewName(user); // Allows user to change their name
                         continue;
 
                     // Delete account
@@ -258,7 +258,7 @@
                     case "delete":
                     case "delete account":
                     case "deleteaccount":
-                        Console.WriteLine("3. Delete Account");
+                        Console.WriteLine("3. Delete Account"); // Allows account deletion - All data will be deleted & funds forced to be withdrawn once deleted
                         Console.WriteLine("Enter Password:");
                         string password = Console.ReadLine()!;
                         Console.WriteLine("\nAre you sure you want to delete your account? This cannot be undone.");
@@ -271,8 +271,8 @@
                         }
                         user.WithdrawAccountBalance();
                         try 
-                        {
-                            var accountToDelete = accounts.Single(u => u.Email == user.Email);
+                        { // Attempting to delete account
+                            var accountToDelete = accounts.Single(u => u.Email == user.Email); // Verifying account to delete
                             accounts.Remove(accountToDelete);
                         }
                         catch 
@@ -281,7 +281,7 @@
                             currentSessionState = SessionState.SessionEnded;
                             return null;
                         }
-                        Console.WriteLine("\nAccount deleted.");
+                        Console.WriteLine("\nAccount deleted."); // Account deleted & returns to banks main menu
                         currentSessionState = SessionState.Default;
                         Console.ReadKey();
                         return null;
@@ -295,7 +295,7 @@
                     case "back":
                     case "exit settings":
                     case "exitsettings":
-                        return user;
+                        return user; // exits to account area
                 }
             }
         }
@@ -304,7 +304,7 @@
         {
             Console.WriteLine($"\nAccount email: {user.Email}");
             Console.WriteLine("Enter current password: ");
-            string password = Console.ReadLine()!;
+            string password = Console.ReadLine()!; // Verifies current password
             int maxAttempts = 3;
             int currentAttempt = 0;
 
@@ -325,25 +325,25 @@
 
             if (password == user.Password)
             {
-                Console.WriteLine("\nEnter new password:");
+                Console.WriteLine("\nEnter new password:"); // Takes new password twice
                 string newPassword = Console.ReadLine()!;
                 Console.WriteLine("\nPlease confirm your new password:");
                 string confirmNewPassword = Console.ReadLine()!;
 
                 if (newPassword != confirmNewPassword || string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(confirmNewPassword))
-                {
+                { // Checking that inputs match & are valid
                     Console.WriteLine("\nThe new passwords you entered do not match or were left blank. \nPress enter to return to the settings menu.");
                     Console.ReadLine();
                     return;
                 }
                 if (confirmNewPassword == user.Password)
-                {
+                { // checking that the new password is not the current one
                     Console.WriteLine("\nNew password must be different to current password. \nPress enter to return to the settings menu.");
                     Console.ReadLine();
                     return;
                 }
 
-                Password = newPassword;
+                Password = newPassword; // Setting password as the new password
                 Console.WriteLine("\nYour password has been updated successfully. \nPress enter to return to the settings menu.");
                 Console.ReadLine();
             }
@@ -358,7 +358,7 @@
 
             if (InputHelper.IsEscapeWord(name)) { return; }
 
-            Owner = name;
+            Owner = name; // Setting new name
             Console.WriteLine($"Name updated to: {user.Owner}");
             Console.ReadKey();
         }
